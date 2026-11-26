@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
-// Invoice API routes will be registered in Phase 3.
+Route::apiResource('invoices', InvoiceController::class)->only(['index', 'store', 'show']);
