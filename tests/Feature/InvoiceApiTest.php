@@ -396,4 +396,47 @@ class InvoiceApiTest extends TestCase
         $fallback->assertOk();
         $this->assertSame(15, $fallback->json('meta.per_page'));
     }
+
+    public function test_prevents_duplicate_invoice_creation_with_same_idempotency_key(): void
+    {
+        $payload = [
+            'customer' => 'محمد الحميري',
+            'items' => [
+                ['name' => 'رز بسمتي 10 كيلو', 'qty' => 1, 'price' => 18000],
+            ],
+        ];
+
+        $headers = ['Idempotency-Key' => 'checkout-uuid-12345'];
+
+        $first = $this->postJson('/api/invoices', $payload, $headers);
+        $first->assertCreated();
+
+        $second = $this->postJson('/api/invoices', $payload, $headers);
+        $second->assertOk();
+
+        $this->assertSame($first->json('id'), $second->json('id'));
+        $this->assertSame(20700, $second->json('total'));
+        $this->assertDatabaseCount('invoices', 1);
+        $this->assertDatabaseCount('invoice_items', 1);
+    }
+
+    public function test_allows_distinct_invoices_with_different_idempotency_keys(): void
+    {
+        $payload = [
+            'customer' => 'فاطمة العريقي',
+            'items' => [
+                ['name' => 'شاهي 450 جرام', 'qty' => 3, 'price' => 3100],
+            ],
+        ];
+
+        $first = $this->postJson('/api/invoices', $payload, ['Idempotency-Key' => 'key-1']);
+        $first->assertCreated();
+
+        $second = $this->postJson('/api/invoices', $payload, ['Idempotency-Key' => 'key-2']);
+        $second->assertCreated();
+
+        $this->assertNotSame($first->json('id'), $second->json('id'));
+        $this->assertDatabaseCount('invoices', 2);
+        $this->assertDatabaseCount('invoice_items', 2);
+    }
 }

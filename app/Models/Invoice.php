@@ -14,6 +14,7 @@ class Invoice extends Model
      */
     protected $fillable = [
         'customer',
+        'idempotency_key',
         'subtotal',
         'tax',
         'total',

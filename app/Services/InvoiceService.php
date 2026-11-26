@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Invoice;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceService
@@ -10,10 +11,23 @@ class InvoiceService
     /**
      * Calculate totals server-side in minor units and persist the invoice atomically.
      *
+     * When an idempotency key is provided, duplicate submissions return the
+     * previously created invoice instead of creating a new record.
+     *
      * @param  array{customer: string, items: array<int, array{name: string, qty: int|float|string, price: int|float|string}>}  $validatedData
      */
-    public function create(array $validatedData): Invoice
+    public function create(array $validatedData, ?string $idempotencyKey = null): Invoice
     {
+        if ($idempotencyKey !== null) {
+            $existing = Invoice::with('items')
+                ->where('idempotency_key', $idempotencyKey)
+                ->first();
+
+            if ($existing !== null) {
+                return $existing;
+            }
+        }
+
         $taxRate = (float) config('invoice.tax_rate', 0.15);
         $currency = (string) config('invoice.currency', 'YER');
 
@@ -38,27 +52,43 @@ class InvoiceService
         $taxMinor = (int) round($subtotalMinor * $taxRate, 0, PHP_ROUND_HALF_UP);
         $totalMinor = $subtotalMinor + $taxMinor;
 
-        return DB::transaction(function () use (
-            $validatedData,
-            $subtotalMinor,
-            $taxMinor,
-            $totalMinor,
-            $taxRate,
-            $currency,
-            $preparedItems
-        ): Invoice {
-            $invoice = Invoice::create([
-                'customer' => $validatedData['customer'],
-                'subtotal' => $subtotalMinor,
-                'tax' => $taxMinor,
-                'total' => $totalMinor,
-                'tax_rate' => $taxRate,
-                'currency' => $currency,
-            ]);
+        try {
+            return DB::transaction(function () use (
+                $validatedData,
+                $idempotencyKey,
+                $subtotalMinor,
+                $taxMinor,
+                $totalMinor,
+                $taxRate,
+                $currency,
+                $preparedItems
+            ): Invoice {
+                $invoice = Invoice::create([
+                    'customer' => $validatedData['customer'],
+                    'idempotency_key' => $idempotencyKey,
+                    'subtotal' => $subtotalMinor,
+                    'tax' => $taxMinor,
+                    'total' => $totalMinor,
+                    'tax_rate' => $taxRate,
+                    'currency' => $currency,
+                ]);
 
-            $invoice->items()->createMany($preparedItems);
+                $invoice->items()->createMany($preparedItems);
 
-            return $invoice->load('items');
-        });
+                return $invoice->load('items');
+            });
+        } catch (QueryException $e) {
+            if ($idempotencyKey !== null) {
+                $existing = Invoice::with('items')
+                    ->where('idempotency_key', $idempotencyKey)
+                    ->first();
+
+                if ($existing !== null) {
+                    return $existing;
+                }
+            }
+
+            throw $e;
+        }
     }
 }

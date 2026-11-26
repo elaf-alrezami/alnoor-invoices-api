@@ -71,6 +71,7 @@ All monetary values are stored as **integer minor units** (`amount × 100`) to p
 | :--- | :--- | :--- |
 | `id` | `id` (PK) | Auto-increment invoice number |
 | `customer` | `string(255)` | Indexed for customer search |
+| `idempotency_key` | `string(255)` | Nullable, `UNIQUE` — prevents duplicate submissions via `Idempotency-Key` header |
 | `subtotal` | `unsignedBigInteger` | Stored in minor units (`value * 100`) |
 | `tax` | `unsignedBigInteger` | Stored in minor units (`value * 100`) |
 | `total` | `unsignedBigInteger` | Stored in minor units (`value * 100`) |
@@ -266,4 +267,4 @@ curl -G http://127.0.0.1:8000/api/invoices \
 - **Minor-Unit Integer Arithmetic (`× 100`):** Prices, line totals, subtotals, tax, and totals are calculated and stored as integer minor units using `PHP_ROUND_HALF_UP`, guaranteeing deterministic precision without requiring optional extensions like `bcmath`.
 - **Atomic Persistence:** Invoice header creation and bulk item insertion run inside `DB::transaction()` in `InvoiceService` so partial writes or orphan rows can never occur.
 - **Forced JSON API Responses:** `bootstrap/app.php` forces JSON rendering for all `/api/*` routes regardless of the caller's `Accept` header and normalizes missing invoices to a clean `404` JSON payload.
-- **Preventing Duplicate Submissions (Idempotency-Key Pattern):** In production, clients should generate a UUID per checkout attempt in an `Idempotency-Key` header persisted with a database-level `UNIQUE` constraint so retried or concurrent requests return the existing invoice instead of creating duplicates, complemented by disabling the submit button while in flight.
+- **Preventing Duplicate Submissions (`Idempotency-Key`):** `POST /api/invoices` supports an optional `Idempotency-Key` header backed by a nullable `UNIQUE` `idempotency_key` column on `invoices`. Repeated or concurrent requests sharing the same key return the originally created invoice (`200 OK`) instead of inserting a duplicate.

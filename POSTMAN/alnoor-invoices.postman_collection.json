@@ -57,6 +57,69 @@
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "inv-mohammed-001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"محمد الحميري\",\n  \"items\": [\n    {\n      \"name\": \"رز بسمتي 10 كيلو\",\n      \"qty\": 1,\n      \"price\": 18000\n    },\n    {\n      \"name\": \"سكر 5 كيلو\",\n      \"qty\": 2,\n      \"price\": 6500\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Duplicate Retry - محمد الحميري (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK (existing invoice returned)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Returns the exact same invoice ID without creating a duplicate', function () {",
+                  "    pm.expect(json.id).to.equal(Number(pm.collectionVariables.get('invoice_id')));",
+                  "    pm.expect(json.total).to.equal(35650);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "inv-mohammed-001"
               }
             ],
             "body": {
@@ -113,6 +176,10 @@
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "inv-fatima-001"
               }
             ],
             "body": {
@@ -169,6 +236,10 @@
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "inv-abdullah-001"
               }
             ],
             "body": {
@@ -231,6 +302,10 @@
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "inv-khaled-001"
               }
             ],
             "body": {

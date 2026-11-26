@@ -42,11 +42,14 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request): JsonResponse
     {
-        $invoice = $this->invoiceService->create($request->validated());
+        $rawKey = $request->header('Idempotency-Key');
+        $idempotencyKey = is_string($rawKey) && trim($rawKey) !== '' ? trim($rawKey) : null;
+
+        $invoice = $this->invoiceService->create($request->validated(), $idempotencyKey);
 
         return (new InvoiceResource($invoice))
             ->response()
-            ->setStatusCode(201);
+            ->setStatusCode($invoice->wasRecentlyCreated ? 201 : 200);
     }
 
     /**
