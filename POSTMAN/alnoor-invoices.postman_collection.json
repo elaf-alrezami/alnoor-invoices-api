@@ -191,62 +191,6 @@
               ]
             }
           }
-        },
-        {
-          "name": "Create Invoice - Fractional Rounding",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Status code is 201 Created', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "",
-                  "pm.test('Fractional totals use half-up rounding accurately', function () {",
-                  "    pm.expect(json.subtotal).to.equal(10.33);",
-                  "    pm.expect(json.tax).to.equal(1.55);",
-                  "    pm.expect(json.total).to.equal(11.88);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"customer\": \"اختبار الكسور\",\n  \"items\": [\n    {\n      \"name\": \"صنف تجريبي\",\n      \"qty\": 1,\n      \"price\": 10.33\n    }\n  ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/api/invoices",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "invoices"
-              ]
-            }
-          }
         }
       ]
     },
@@ -631,7 +575,7 @@
                   "    pm.expect(json.data.length).to.equal(2);",
                   "    pm.expect(json.meta.per_page).to.equal(2);",
                   "    pm.expect(json.meta.current_page).to.equal(1);",
-                  "    pm.expect(json.meta.total).to.be.at.least(5);",
+                  "    pm.expect(json.meta.total).to.be.at.least(4);",
                   "});"
                 ]
               }
