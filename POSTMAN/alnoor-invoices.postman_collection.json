@@ -1,0 +1,673 @@
+{
+  "info": {
+    "name": "Al-Noor Grocery Invoices API",
+    "description": "Ready-to-import Postman Collection (v2.1.0) for Al-Noor Grocery Invoices API. Run sequentially via Postman Collection Runner against a fresh SQLite database.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "invoice_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Valid Invoices (201)",
+      "item": [
+        {
+          "name": "Create Invoice - محمد الحميري",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Totals and items match server-side calculation', function () {",
+                  "    pm.expect(json.subtotal).to.equal(31000);",
+                  "    pm.expect(json.tax).to.equal(4650);",
+                  "    pm.expect(json.total).to.equal(35650);",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "    pm.expect(json.items.length).to.equal(2);",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set('invoice_id', json.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"محمد الحميري\",\n  \"items\": [\n    {\n      \"name\": \"رز بسمتي 10 كيلو\",\n      \"qty\": 1,\n      \"price\": 18000\n    },\n    {\n      \"name\": \"سكر 5 كيلو\",\n      \"qty\": 2,\n      \"price\": 6500\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Invoice - فاطمة العريقي",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Totals match server-side calculation', function () {",
+                  "    pm.expect(json.subtotal).to.equal(9300);",
+                  "    pm.expect(json.tax).to.equal(1395);",
+                  "    pm.expect(json.total).to.equal(10695);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"فاطمة العريقي\",\n  \"items\": [\n    {\n      \"name\": \"شاهي 450 جرام\",\n      \"qty\": 3,\n      \"price\": 3100\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Invoice - عبدالله الشامي",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Totals match server-side calculation', function () {",
+                  "    pm.expect(json.subtotal).to.equal(36000);",
+                  "    pm.expect(json.tax).to.equal(5400);",
+                  "    pm.expect(json.total).to.equal(41400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"عبدالله الشامي\",\n  \"items\": [\n    {\n      \"name\": \"عسل سدر 500 جرام\",\n      \"qty\": 1,\n      \"price\": 22000\n    },\n    {\n      \"name\": \"قهوة يمنية 250 جرام\",\n      \"qty\": 2,\n      \"price\": 5200\n    },\n    {\n      \"name\": \"تونة (4 علب)\",\n      \"qty\": 1,\n      \"price\": 3600\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Invoice - Fractional Rounding",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Fractional totals use half-up rounding accurately', function () {",
+                  "    pm.expect(json.subtotal).to.equal(10.33);",
+                  "    pm.expect(json.tax).to.equal(1.55);",
+                  "    pm.expect(json.total).to.equal(11.88);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"اختبار الكسور\",\n  \"items\": [\n    {\n      \"name\": \"صنف تجريبي\",\n      \"qty\": 1,\n      \"price\": 10.33\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Ignore Client Totals (201)",
+      "item": [
+        {
+          "name": "Ignore Client Total - خالد العولقي",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Server ignores client-supplied totals and recalculates', function () {",
+                  "    pm.expect(json.total).to.not.equal(1);",
+                  "    pm.expect(json.subtotal).to.equal(9800);",
+                  "    pm.expect(json.tax).to.equal(1470);",
+                  "    pm.expect(json.total).to.equal(11270);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"خالد العولقي\",\n  \"total\": 1,\n  \"subtotal\": 1,\n  \"tax\": 0,\n  \"items\": [\n    {\n      \"name\": \"حليب نيدو 900 جرام\",\n      \"qty\": 1,\n      \"price\": 9800\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Invalid Requests (422)",
+      "item": [
+        {
+          "name": "Reject Negative Qty - سارة المقطري",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Validation errors contain items.0.qty', function () {",
+                  "    pm.expect(json.errors).to.have.property('items.0.qty');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"سارة المقطري\",\n  \"items\": [\n    {\n      \"name\": \"دقيق 10 كيلو\",\n      \"qty\": -2,\n      \"price\": 9500\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reject Missing Price - أحمد الصبري",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Validation errors contain items.0.price', function () {",
+                  "    pm.expect(json.errors).to.have.property('items.0.price');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"أحمد الصبري\",\n  \"items\": [\n    {\n      \"name\": \"زيت طبخ 1.8 لتر\",\n      \"qty\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reject Empty Items (No Accept Header) - نورة الأغبري",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 422 even without Accept header', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Validation errors contain items', function () {",
+                  "    pm.expect(json.errors).to.have.property('items');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"نورة الأغبري\",\n  \"items\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/invoices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Read, Search, Pagination & 404",
+      "item": [
+        {
+          "name": "Get Invoice by ID (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Invoice matches saved ID without outer data wrapper', function () {",
+                  "    pm.expect(json).to.not.have.property('data');",
+                  "    pm.expect(json.id).to.equal(Number(pm.collectionVariables.get('invoice_id')));",
+                  "    pm.expect(json.total).to.equal(35650);",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "    pm.expect(json.items.length).to.equal(2);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/invoices/{{invoice_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices",
+                "{{invoice_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Non-Existent Invoice (404 No Accept Header)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 404 JSON without Accept header', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Returns exact not found message', function () {",
+                  "    pm.expect(json.message).to.equal('Invoice not found.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/invoices/99999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices",
+                "99999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Invoices by Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Search returns only فاطمة العريقي', function () {",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "    pm.expect(json.data.length).to.equal(1);",
+                  "    pm.expect(json.data[0].customer).to.equal('فاطمة العريقي');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/invoices?search=فاطمة",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "فاطمة"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Paginate Invoices",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test('Pagination metadata and page size are accurate', function () {",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "    pm.expect(json.data.length).to.equal(2);",
+                  "    pm.expect(json.meta.per_page).to.equal(2);",
+                  "    pm.expect(json.meta.current_page).to.equal(1);",
+                  "    pm.expect(json.meta.total).to.be.at.least(5);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/invoices?per_page=2&page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "invoices"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "2"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

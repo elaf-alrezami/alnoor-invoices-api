@@ -57,6 +57,8 @@ Tests run against an in-memory SQLite database (`:memory:`) via `phpunit.xml` wi
 - Arabic customer search (`?search=` and `?customer=`), newest-first ordering, pagination metadata, and `per_page` bounds sanitization (`1..100`, defaulting to `15`).
 - Forced JSON `422` and `404` responses on `/api/*` routes even when the `Accept: application/json` header is omitted.
 
+> **Postman Collection:** Import `POSTMAN/alnoor-invoices.postman_collection.json` into Postman and run the folders sequentially via Collection Runner to test all endpoints with built-in assertions.
+
 ---
 
 ## Database Schema Summary
